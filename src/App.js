@@ -6,28 +6,28 @@ import Home from './components/Home';
 import Form from './components/Form';
 import Header from './components/Header';
 
+const SERVER = 'https://aachallengeone.now.sh';
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: localStorage.getItem('aa-doc-user')
+      user: localStorage.getItem('aa-doc-user'),
+      docs: []
     };
   }
-  componentDidMount() {
-    axios
-      .post('https://aachallengeone.now.sh/update/0', {
-        issuer: 'josh',
-        content: 'FIRST DOC LEZ GET IT'
-      })
-      .then(function(res) {
-        console.log(res);
-        axios
-          .get('https://aachallengeone.now.sh/read')
-          .then(function(response) {
-            console.log(response);
-          });
+
+  fetchDocs = () => {
+    axios.get(`${SERVER}/read`).then(res => {
+      const docs = [];
+      Object.keys(res.data).forEach(docName => {
+        docs.push(res.data[docName]);
       });
-  }
+      this.setState({
+        docs
+      });
+    });
+  };
 
   login = e => {
     e.preventDefault();
@@ -48,15 +48,16 @@ class App extends Component {
   };
 
   render() {
+    const { user, docs } = this.state;
     return (
       <Router>
         <div>
-          <Header
-            user={this.state.user}
-            login={this.login}
-            logout={this.logout}
+          <Header user={user} login={this.login} logout={this.logout} />
+          <Route
+            exact
+            path="/"
+            render={() => <Home docs={docs} fetchDocs={this.fetchDocs} />}
           />
-          <Route exact path="/" component={Home} />
           <Route path="/form" component={Form} />
         </div>
       </Router>
