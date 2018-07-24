@@ -87,10 +87,14 @@
   },
   "babel": {
     "presets": [
-      "react-app"
+      "react-app",
+      "stage-2"
     ]
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "babel-preset-stage-2": "^6.24.1"
   }
 }

@@ -28,11 +28,34 @@ class App extends Component {
           });
       });
   }
+
+  login = e => {
+    e.preventDefault();
+    const user = e.target.elements[0].value;
+    this.setState(
+      {
+        user
+      },
+      () => localStorage.setItem('aa-doc-user', this.state.user)
+    );
+  };
+
+  logout = e => {
+    localStorage.removeItem('aa-doc-user');
+    this.setState({
+      user: null
+    });
+  };
+
   render() {
     return (
       <Router>
         <div>
-          <Header user={this.state.user} />
+          <Header
+            user={this.state.user}
+            login={this.login}
+            logout={this.logout}
+          />
           <Route exact path="/" component={Home} />
           <Route path="/form" component={Form} />
         </div>

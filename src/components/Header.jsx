@@ -1,18 +1,16 @@
 import React from 'react';
 
-const Header = ({ user, logout }) => {
+const Header = ({ user, logout, login }) => {
   if (user) {
     return (
       <div>
         {`Hi ${user}!`}
-        <button onClick={() => localStorage.removeItem('aa-doc-user')}>
-          Sign Out
-        </button>
+        <button onClick={logout}>Sign Out</button>
       </div>
     );
   } else {
     return (
-      <form onSubmit={e => localStorage.setItem('aa-doc-user', e.target.valu)}>
+      <form onSubmit={login}>
         <input type="text" />
         <input type="submit" />
       </form>
