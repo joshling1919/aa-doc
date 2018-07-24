@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Home from './components/Home';
-import Form from './components/Form';
+import CreateDoc from './components/CreateDoc';
 import Header from './components/Header';
 
 const SERVER = 'https://aachallengeone.now.sh';
@@ -27,6 +27,17 @@ class App extends Component {
         docs
       });
     });
+  };
+
+  createDoc = doc => {
+    axios
+      .post(`${SERVER}/update/${doc.name}`, {
+        issuer: this.state.user,
+        content: doc.content
+      })
+      .then(res => {
+        console.log('this was created respones', res);
+      });
   };
 
   login = e => {
@@ -58,7 +69,10 @@ class App extends Component {
             path="/"
             render={() => <Home docs={docs} fetchDocs={this.fetchDocs} />}
           />
-          <Route path="/form" component={Form} />
+          <Route
+            path="/new"
+            render={() => <CreateDoc createDoc={this.createDoc} />}
+          />
         </div>
       </Router>
     );
