@@ -5,6 +5,7 @@ import { withRouter, Route } from 'react-router-dom';
 import Home from './components/Home';
 import CreateDoc from './components/CreateDoc';
 import Header from './components/Header';
+import EditDoc from './components/EditDoc';
 
 const SERVER = 'https://aachallengeone.now.sh';
 
@@ -25,17 +26,27 @@ class App extends Component {
     });
   };
 
+  fetchOneDoc = name => {
+    return axios.get(`${SERVER}/read/${name}`);
+  };
+
+  postDoc(doc) {
+    const { user } = this.state;
+    return axios.post(`${SERVER}/update/${doc.name}`, {
+      issuer: user,
+      content: doc.content
+    });
+  }
+
   createDoc = doc => {
-    const { user, docs } = this.state;
     const { history } = this.props;
-    axios
-      .post(`${SERVER}/update/${doc.name}`, {
-        issuer: user,
-        content: doc.content
-      })
-      .then(res => {
-        this.fetchDocs().then(() => history.push('/'));
-      });
+    this.postDoc(doc).then(res => {
+      this.fetchDocs().then(() => history.push('/'));
+    });
+  };
+
+  updateDoc = doc => {
+    return this.postDoc(doc);
   };
 
   login = e => {
@@ -69,6 +80,16 @@ class App extends Component {
         <Route
           path="/new"
           render={() => <CreateDoc createDoc={this.createDoc} />}
+        />
+        <Route
+          path="/edit/:name"
+          render={props => (
+            <EditDoc
+              {...props}
+              fetchOneDoc={this.fetchOneDoc}
+              updateDoc={this.updateDoc}
+            />
+          )}
         />
       </div>
     );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 class Home extends React.Component {
   componentDidMount() {
@@ -10,12 +11,13 @@ class Home extends React.Component {
       <div>
         {Object.keys(docs)
           .reverse()
-          .map((docName, i) => {
-            const doc = docs[docName];
+          .map((name, i) => {
+            const doc = docs[name];
             return (
-              <div key={docName + i}>
+              <div key={name + i}>
                 <span>
-                  {`Name: ${docName} last changed by ${doc.lastChangeBy}`}
+                  <Link to={`/edit/${name}`}>{name}</Link>
+                  {`last changed by ${doc.lastChangeBy}`}
                 </span>
               </div>
             );

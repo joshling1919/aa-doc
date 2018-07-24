@@ -19,6 +19,7 @@ const Header = ({ user, logout, login }) => {
 
   return (
     <div>
+      <Link to={'/'}>a/A DOC!!</Link>
       {userInfo}
       <Link to={'/new'}>Create a New Doc</Link>
     </div>
