@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { withRouter, Route } from 'react-router-dom';
 import Home from './components/Home';
 import CreateDoc from './components/CreateDoc';
 import Header from './components/Header';
@@ -13,30 +13,28 @@ class App extends Component {
     super(props);
     this.state = {
       user: localStorage.getItem('aa-doc-user'),
-      docs: []
+      docs: {}
     };
   }
 
   fetchDocs = () => {
-    axios.get(`${SERVER}/read`).then(res => {
-      const docs = [];
-      Object.keys(res.data).forEach(docName => {
-        docs.push(res.data[docName]);
-      });
+    return axios.get(`${SERVER}/read`).then(res => {
       this.setState({
-        docs
+        docs: res.data
       });
     });
   };
 
   createDoc = doc => {
+    const { user, docs } = this.state;
+    const { history } = this.props;
     axios
       .post(`${SERVER}/update/${doc.name}`, {
-        issuer: this.state.user,
+        issuer: user,
         content: doc.content
       })
       .then(res => {
-        console.log('this was created respones', res);
+        this.fetchDocs().then(() => history.push('/'));
       });
   };
 
@@ -61,22 +59,20 @@ class App extends Component {
   render() {
     const { user, docs } = this.state;
     return (
-      <Router>
-        <div>
-          <Header user={user} login={this.login} logout={this.logout} />
-          <Route
-            exact
-            path="/"
-            render={() => <Home docs={docs} fetchDocs={this.fetchDocs} />}
-          />
-          <Route
-            path="/new"
-            render={() => <CreateDoc createDoc={this.createDoc} />}
-          />
-        </div>
-      </Router>
+      <div>
+        <Header user={user} login={this.login} logout={this.logout} />
+        <Route
+          exact
+          path="/"
+          render={() => <Home docs={docs} fetchDocs={this.fetchDocs} />}
+        />
+        <Route
+          path="/new"
+          render={() => <CreateDoc createDoc={this.createDoc} />}
+        />
+      </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

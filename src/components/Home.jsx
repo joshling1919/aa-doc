@@ -7,7 +7,20 @@ class Home extends React.Component {
   render() {
     const { docs } = this.props;
     return (
-      <div>{docs.map((doc, i) => <div key={i}>{doc.lastChangeBy}</div>)}</div>
+      <div>
+        {Object.keys(docs)
+          .reverse()
+          .map((docName, i) => {
+            const doc = docs[docName];
+            return (
+              <div key={docName + i}>
+                <span>
+                  {`Name: ${docName} last changed by ${doc.lastChangeBy}`}
+                </span>
+              </div>
+            );
+          })}
+      </div>
     );
   }
 }
